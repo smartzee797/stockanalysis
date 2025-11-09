@@ -657,10 +657,47 @@ async function loadNews() {
 }
 
 // ====================================
+// Theme Toggle Functionality
+// ====================================
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme preference or default to 'light'
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme);
+
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+
+        // Add a fun animation
+        themeToggle.style.transform = 'rotate(360deg) scale(1.2)';
+        setTimeout(() => {
+            themeToggle.style.transform = '';
+        }, 300);
+    });
+
+    function updateThemeIcon(theme) {
+        themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+}
+
+// ====================================
 // Initialization
 // ====================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Indian Stock Sector Analysis Dashboard initialized');
+
+    // Initialize theme toggle
+    initThemeToggle();
 
     // Check API configuration
     checkAPIKeys();
