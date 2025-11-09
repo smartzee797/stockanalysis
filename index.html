@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Stock Sector Analysis Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>📊 Indian Stock Sector Analysis Dashboard</h1>
+            <p class="subtitle">Comprehensive sector analysis and company insights</p>
+        </header>
+
+        <!-- API Key Configuration Notice -->
+        <div class="config-notice" id="configNotice">
+            <p><strong>⚠️ Configuration Required:</strong> Please add your API keys in <code>main.js</code> to enable data fetching.</p>
+        </div>
+
+        <!-- Section 1: Sector Overview -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>1. Sector Overview</h2>
+                <button class="refresh-btn" onclick="loadSectorData()" id="refreshSector">
+                    <span class="refresh-icon">↻</span> Refresh
+                </button>
+            </div>
+            <div class="section-content">
+                <div id="sectorLoading" class="loading">Loading sector data...</div>
+                <div id="sectorError" class="error" style="display: none;"></div>
+                <div id="sectorGrid" class="sector-grid"></div>
+            </div>
+        </section>
+
+        <!-- Section 2: Companies in Selected Sector -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>2. Companies in Selected Sector</h2>
+                <div class="selected-sector-info">
+                    <span id="selectedSectorName">No sector selected</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <div id="companiesPlaceholder" class="placeholder">
+                    Select a sector above to view companies
+                </div>
+                <div id="companiesLoading" class="loading" style="display: none;">Loading companies...</div>
+                <div id="companiesError" class="error" style="display: none;"></div>
+                <div id="companiesGrid" class="companies-grid"></div>
+            </div>
+        </section>
+
+        <!-- Section 3: News & Sentiment -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>3. News & Sentiment</h2>
+                <button class="refresh-btn" onclick="loadNews()" id="refreshNews" style="display: none;">
+                    <span class="refresh-icon">↻</span> Refresh
+                </button>
+            </div>
+            <div class="section-content">
+                <div id="newsPlaceholder" class="placeholder">
+                    Select a sector or company to view related news
+                </div>
+                <div id="newsLoading" class="loading" style="display: none;">Loading news...</div>
+                <div id="newsError" class="error" style="display: none;"></div>
+                <div id="newsContainer" class="news-container"></div>
+            </div>
+        </section>
+
+        <!-- Section 4: Hold/Sell Checklist -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <h2>4. Hold/Sell Checklist</h2>
+                <p class="section-description">Data-driven metrics to inform your investment decisions</p>
+            </div>
+            <div class="section-content">
+                <div id="checklistPlaceholder" class="placeholder">
+                    Select a company to view hold/sell metrics
+                </div>
+                <div id="checklistLoading" class="loading" style="display: none;">Analyzing metrics...</div>
+                <div id="checklistError" class="error" style="display: none;"></div>
+                <div id="checklistContainer" class="checklist-container"></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                <strong>Disclaimer:</strong> This dashboard provides data for informational purposes only.
+                It does not constitute financial advice. Always conduct your own research and consult
+                with a qualified financial advisor before making investment decisions.
+            </p>
+            <p class="api-credits">
+                Data sources: Alpha Vantage, NewsAPI.org | Built with vanilla JavaScript
+            </p>
+        </footer>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
