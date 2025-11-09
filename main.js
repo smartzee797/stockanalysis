@@ -1,10 +1,24 @@
 // ====================================
 // API Configuration
 // ====================================
-// IMPORTANT: Add your API keys here before using the dashboard
-const API_KEYS = {
-    ALPHA_VANTAGE: 'YOUR_ALPHA_VANTAGE_API_KEY', // Get from: https://www.alphavantage.co/support/#api-key
-    NEWS_API: 'YOUR_NEWS_API_KEY', // Get from: https://newsapi.org/register
+// No API keys needed - using public NSE endpoints and Google News RSS
+
+// CORS proxy for NSE API calls (NSE doesn't support CORS from browser)
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+// NSE Sector Index Mappings
+const NSE_SECTOR_INDICES = {
+    'Information Technology': 'NIFTY IT',
+    'Financials': 'NIFTY FINANCIAL SERVICES',
+    'Energy': 'NIFTY ENERGY',
+    'Consumer Discretionary': 'NIFTY AUTO',
+    'Health Care': 'NIFTY PHARMA',
+    'Industrials': 'NIFTY INFRASTRUCTURE',
+    'Consumer Staples': 'NIFTY FMCG',
+    'Materials': 'NIFTY METAL',
+    'Communication Services': 'NIFTY MEDIA',
+    'Utilities': 'NIFTY PSU BANK',
+    'Real Estate': 'NIFTY REALTY',
 };
 
 // ====================================
@@ -21,77 +35,75 @@ const state = {
 // ====================================
 // Indian Stock Sector Mappings
 // ====================================
-// Map sectors to representative Indian companies
+// Map sectors to representative Indian companies (NSE symbols)
 const INDIAN_SECTOR_COMPANIES = {
-    'Information Technology': ['TCS.BSE', 'INFY.BSE', 'WIPRO.BSE', 'HCLTECH.BSE', 'TECHM.BSE'],
-    'Financials': ['HDFCBANK.BSE', 'ICICIBANK.BSE', 'SBIN.BSE', 'AXISBANK.BSE', 'KOTAKBANK.BSE'],
-    'Energy': ['RELIANCE.BSE', 'ONGC.BSE', 'BPCL.BSE', 'IOC.BSE', 'NTPC.BSE'],
-    'Consumer Discretionary': ['MARUTI.BSE', 'BAJAJ-AUTO.BSE', 'TITAN.BSE', 'TATAMOTORS.BSE'],
-    'Health Care': ['SUNPHARMA.BSE', 'DRREDDY.BSE', 'CIPLA.BSE', 'APOLLOHOSP.BSE'],
-    'Industrials': ['LT.BSE', 'ULTRACEMCO.BSE', 'ADANIENT.BSE', 'SIEMENS.BSE'],
-    'Consumer Staples': ['ITC.BSE', 'HINDUNILVR.BSE', 'NESTLEIND.BSE', 'BRITANNIA.BSE'],
-    'Materials': ['TATASTEEL.BSE', 'HINDALCO.BSE', 'JSWSTEEL.BSE', 'VEDL.BSE'],
-    'Communication Services': ['BHARTIARTL.BSE', 'SAIL.BSE'],
-    'Utilities': ['POWERGRID.BSE', 'NTPC.BSE'],
-    'Real Estate': ['DLF.BSE', 'GODREJPROP.BSE'],
+    'Information Technology': ['TCS', 'INFY', 'WIPRO', 'HCLTECH', 'TECHM'],
+    'Financials': ['HDFCBANK', 'ICICIBANK', 'SBIN', 'AXISBANK', 'KOTAKBANK'],
+    'Energy': ['RELIANCE', 'ONGC', 'BPCL', 'IOC', 'NTPC'],
+    'Consumer Discretionary': ['MARUTI', 'BAJAJ-AUTO', 'TITAN', 'TATAMOTORS'],
+    'Health Care': ['SUNPHARMA', 'DRREDDY', 'CIPLA', 'APOLLOHOSP'],
+    'Industrials': ['LT', 'ULTRACEMCO', 'ADANIENT', 'SIEMENS'],
+    'Consumer Staples': ['ITC', 'HINDUNILVR', 'NESTLEIND', 'BRITANNIA'],
+    'Materials': ['TATASTEEL', 'HINDALCO', 'JSWSTEEL', 'VEDL'],
+    'Communication Services': ['BHARTIARTL', 'SAIL'],
+    'Utilities': ['POWERGRID', 'NTPC'],
+    'Real Estate': ['DLF', 'GODREJPROP'],
 };
 
 // Company name mappings for display
 const COMPANY_NAMES = {
-    'TCS.BSE': 'Tata Consultancy Services',
-    'INFY.BSE': 'Infosys Ltd',
-    'WIPRO.BSE': 'Wipro Ltd',
-    'HCLTECH.BSE': 'HCL Technologies',
-    'TECHM.BSE': 'Tech Mahindra',
-    'HDFCBANK.BSE': 'HDFC Bank',
-    'ICICIBANK.BSE': 'ICICI Bank',
-    'SBIN.BSE': 'State Bank of India',
-    'AXISBANK.BSE': 'Axis Bank',
-    'KOTAKBANK.BSE': 'Kotak Mahindra Bank',
-    'RELIANCE.BSE': 'Reliance Industries',
-    'ONGC.BSE': 'Oil & Natural Gas Corp',
-    'BPCL.BSE': 'Bharat Petroleum',
-    'IOC.BSE': 'Indian Oil Corporation',
-    'NTPC.BSE': 'NTPC Ltd',
-    'MARUTI.BSE': 'Maruti Suzuki',
-    'BAJAJ-AUTO.BSE': 'Bajaj Auto',
-    'TITAN.BSE': 'Titan Company',
-    'TATAMOTORS.BSE': 'Tata Motors',
-    'SUNPHARMA.BSE': 'Sun Pharmaceutical',
-    'DRREDDY.BSE': 'Dr. Reddy\'s Laboratories',
-    'CIPLA.BSE': 'Cipla Ltd',
-    'APOLLOHOSP.BSE': 'Apollo Hospitals',
-    'LT.BSE': 'Larsen & Toubro',
-    'ULTRACEMCO.BSE': 'UltraTech Cement',
-    'ADANIENT.BSE': 'Adani Enterprises',
-    'SIEMENS.BSE': 'Siemens Ltd',
-    'ITC.BSE': 'ITC Ltd',
-    'HINDUNILVR.BSE': 'Hindustan Unilever',
-    'NESTLEIND.BSE': 'Nestle India',
-    'BRITANNIA.BSE': 'Britannia Industries',
-    'TATASTEEL.BSE': 'Tata Steel',
-    'HINDALCO.BSE': 'Hindalco Industries',
-    'JSWSTEEL.BSE': 'JSW Steel',
-    'VEDL.BSE': 'Vedanta Ltd',
-    'BHARTIARTL.BSE': 'Bharti Airtel',
-    'SAIL.BSE': 'SAIL',
-    'POWERGRID.BSE': 'Power Grid Corp',
-    'DLF.BSE': 'DLF Ltd',
-    'GODREJPROP.BSE': 'Godrej Properties',
+    'TCS': 'Tata Consultancy Services',
+    'INFY': 'Infosys Ltd',
+    'WIPRO': 'Wipro Ltd',
+    'HCLTECH': 'HCL Technologies',
+    'TECHM': 'Tech Mahindra',
+    'HDFCBANK': 'HDFC Bank',
+    'ICICIBANK': 'ICICI Bank',
+    'SBIN': 'State Bank of India',
+    'AXISBANK': 'Axis Bank',
+    'KOTAKBANK': 'Kotak Mahindra Bank',
+    'RELIANCE': 'Reliance Industries',
+    'ONGC': 'Oil & Natural Gas Corp',
+    'BPCL': 'Bharat Petroleum',
+    'IOC': 'Indian Oil Corporation',
+    'NTPC': 'NTPC Ltd',
+    'MARUTI': 'Maruti Suzuki',
+    'BAJAJ-AUTO': 'Bajaj Auto',
+    'TITAN': 'Titan Company',
+    'TATAMOTORS': 'Tata Motors',
+    'SUNPHARMA': 'Sun Pharmaceutical',
+    'DRREDDY': 'Dr. Reddy\'s Laboratories',
+    'CIPLA': 'Cipla Ltd',
+    'APOLLOHOSP': 'Apollo Hospitals',
+    'LT': 'Larsen & Toubro',
+    'ULTRACEMCO': 'UltraTech Cement',
+    'ADANIENT': 'Adani Enterprises',
+    'SIEMENS': 'Siemens Ltd',
+    'ITC': 'ITC Ltd',
+    'HINDUNILVR': 'Hindustan Unilever',
+    'NESTLEIND': 'Nestle India',
+    'BRITANNIA': 'Britannia Industries',
+    'TATASTEEL': 'Tata Steel',
+    'HINDALCO': 'Hindalco Industries',
+    'JSWSTEEL': 'JSW Steel',
+    'VEDL': 'Vedanta Ltd',
+    'BHARTIARTL': 'Bharti Airtel',
+    'SAIL': 'SAIL',
+    'POWERGRID': 'Power Grid Corp',
+    'DLF': 'DLF Ltd',
+    'GODREJPROP': 'Godrej Properties',
 };
 
 // ====================================
 // Utility Functions
 // ====================================
 function checkAPIKeys() {
-    const hasKeys = API_KEYS.ALPHA_VANTAGE !== 'YOUR_ALPHA_VANTAGE_API_KEY' &&
-                    API_KEYS.NEWS_API !== 'YOUR_NEWS_API_KEY';
-
+    // No API keys needed anymore - hide the notice
     const notice = document.getElementById('configNotice');
-    if (hasKeys && notice) {
+    if (notice) {
         notice.style.display = 'none';
     }
-    return hasKeys;
+    return true;
 }
 
 function formatCurrency(value) {
@@ -149,77 +161,95 @@ function analyzeSentiment(text) {
 // API Functions
 // ====================================
 
-// Fetch Sector Performance Data
+// Fetch Sector Performance Data from NSE
 async function fetchSectorData() {
     try {
-        // Note: Alpha Vantage's SECTOR endpoint provides US sector data
-        // For demonstration, we'll use it and adapt for Indian context
-        const url = `https://www.alphavantage.co/query?function=SECTOR&apikey=${API_KEYS.ALPHA_VANTAGE}`;
+        const results = [];
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch sector data');
+        for (const [sector, indexName] of Object.entries(NSE_SECTOR_INDICES)) {
+            try {
+                const nseUrl = `https://www.nseindia.com/api/equity-stockIndices?index=${encodeURIComponent(indexName)}`;
+                const url = CORS_PROXY + encodeURIComponent(nseUrl);
 
-        const data = await response.json();
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
 
-        // Check for API error messages
-        if (data['Error Message'] || data['Note']) {
-            throw new Error(data['Error Message'] || 'API rate limit reached. Please wait and try again.');
+                if (!response.ok) {
+                    console.warn(`Failed to fetch ${indexName}`);
+                    results.push({ name: sector, performance: 0 });
+                    continue;
+                }
+
+                const data = await response.json();
+
+                // Extract performance from first data item
+                const perf = data.data && data.data.length > 0
+                    ? parseFloat(data.data[0].pChange || 0)
+                    : 0;
+
+                results.push({ name: sector, performance: perf });
+
+                // Add delay to avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+            } catch (error) {
+                console.error(`Error fetching ${sector}:`, error);
+                results.push({ name: sector, performance: 0 });
+            }
         }
 
-        // Parse sector performance data
-        const rankRealTime = data['Rank A: Real-Time Performance'];
-        if (!rankRealTime) {
-            throw new Error('Invalid sector data format');
-        }
-
-        // Convert to array format
-        const sectors = Object.keys(rankRealTime).map(sector => ({
-            name: sector,
-            performance: parseFloat(rankRealTime[sector].replace('%', '')),
-        }));
-
-        return sectors;
+        return results;
     } catch (error) {
         console.error('Error fetching sector data:', error);
         throw error;
     }
 }
 
-// Fetch Company Quote Data
+// Fetch Company Quote Data from NSE
 async function fetchCompanyQuote(symbol) {
     try {
-        // Remove .BSE suffix for API call (Alpha Vantage uses different format)
         const cleanSymbol = symbol.replace('.BSE', '');
+        const nseUrl = `https://www.nseindia.com/api/quote-equity?symbol=${cleanSymbol}`;
+        const url = CORS_PROXY + encodeURIComponent(nseUrl);
 
-        const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${cleanSymbol}&apikey=${API_KEYS.ALPHA_VANTAGE}`;
+        const response = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed to fetch data for ${symbol}`);
+        if (!response.ok) {
+            console.warn(`Failed to fetch data for ${symbol}`);
+            return null;
+        }
 
         const data = await response.json();
 
-        // Check for API errors
-        if (data['Error Message'] || data['Note']) {
-            console.warn(`API issue for ${symbol}:`, data['Error Message'] || data['Note']);
+        // Check for valid data
+        if (!data.priceInfo) {
+            console.warn(`No price data available for ${symbol}`);
             return null;
         }
 
-        const quote = data['Global Quote'];
-        if (!quote || Object.keys(quote).length === 0) {
-            console.warn(`No data available for ${symbol}`);
-            return null;
-        }
+        const priceInfo = data.priceInfo || {};
+        const metadata = data.metadata || {};
 
         return {
-            symbol: symbol,
-            name: COMPANY_NAMES[symbol] || symbol,
-            price: parseFloat(quote['05. price']) || 0,
-            change: parseFloat(quote['09. change']) || 0,
-            changePercent: parseFloat(quote['10. change percent']?.replace('%', '')) || 0,
-            volume: parseInt(quote['06. volume']) || 0,
-            high: parseFloat(quote['03. high']) || 0,
-            low: parseFloat(quote['04. low']) || 0,
-            previousClose: parseFloat(quote['08. previous close']) || 0,
+            symbol: cleanSymbol,
+            name: COMPANY_NAMES[cleanSymbol] || cleanSymbol,
+            price: parseFloat(priceInfo.lastPrice) || 0,
+            change: parseFloat(priceInfo.change) || 0,
+            changePercent: parseFloat(priceInfo.pChange) || 0,
+            volume: parseInt(priceInfo.totalTradedVolume) || 0,
+            high: parseFloat(priceInfo.intraDayHighLow?.max) || 0,
+            low: parseFloat(priceInfo.intraDayHighLow?.min) || 0,
+            previousClose: parseFloat(priceInfo.previousClose) || 0,
+            peRatio: parseFloat(metadata.pdSymbolPe) || 0,
+            weekHigh: parseFloat(priceInfo.weekHighLow?.max) || 0,
+            weekLow: parseFloat(priceInfo.weekHighLow?.min) || 0,
         };
     } catch (error) {
         console.error(`Error fetching quote for ${symbol}:`, error);
@@ -227,61 +257,38 @@ async function fetchCompanyQuote(symbol) {
     }
 }
 
-// Fetch Company Overview (for fundamentals)
-async function fetchCompanyOverview(symbol) {
-    try {
-        const cleanSymbol = symbol.replace('.BSE', '');
-
-        const url = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${cleanSymbol}&apikey=${API_KEYS.ALPHA_VANTAGE}`;
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed to fetch overview for ${symbol}`);
-
-        const data = await response.json();
-
-        if (data['Error Message'] || data['Note'] || Object.keys(data).length === 0) {
-            return null;
-        }
-
-        return {
-            marketCap: parseInt(data['MarketCapitalization']) || 0,
-            peRatio: parseFloat(data['PERatio']) || 0,
-            pbRatio: parseFloat(data['PriceToBookRatio']) || 0,
-            dividendYield: parseFloat(data['DividendYield']) || 0,
-            eps: parseFloat(data['EPS']) || 0,
-            beta: parseFloat(data['Beta']) || 0,
-            week52High: parseFloat(data['52WeekHigh']) || 0,
-            week52Low: parseFloat(data['52WeekLow']) || 0,
-        };
-    } catch (error) {
-        console.error(`Error fetching overview for ${symbol}:`, error);
-        return null;
-    }
-}
-
-// Fetch News Data
+// Fetch News Data from Google News RSS
 async function fetchNews(query) {
     try {
-        const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&sortBy=publishedAt&pageSize=10&apiKey=${API_KEYS.NEWS_API}`;
+        const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query + ' stock india')}&hl=en-IN&gl=IN&ceid=IN:en`;
+        const url = CORS_PROXY + encodeURIComponent(feedUrl);
 
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch news');
 
-        const data = await response.json();
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/xml');
 
-        if (data.status !== 'ok') {
-            throw new Error(data.message || 'Failed to fetch news');
-        }
+        const items = doc.querySelectorAll('item');
 
-        return data.articles.map(article => ({
-            title: article.title,
-            description: article.description,
-            url: article.url,
-            source: article.source.name,
-            publishedAt: article.publishedAt,
-            imageUrl: article.urlToImage,
-            sentiment: analyzeSentiment(article.title + ' ' + (article.description || '')),
-        }));
+        return Array.from(items).slice(0, 10).map(item => {
+            const title = item.querySelector('title')?.textContent || '';
+            const description = item.querySelector('description')?.textContent || '';
+            const link = item.querySelector('link')?.textContent || '';
+            const pubDate = item.querySelector('pubDate')?.textContent || '';
+            const source = item.querySelector('source')?.textContent || 'Google News';
+
+            return {
+                title: title,
+                description: description,
+                url: link,
+                source: source,
+                publishedAt: pubDate,
+                imageUrl: null, // RSS feeds don't typically include images
+                sentiment: analyzeSentiment(title + ' ' + description),
+            };
+        });
     } catch (error) {
         console.error('Error fetching news:', error);
         throw error;
@@ -407,16 +414,15 @@ function renderNews(articles) {
 }
 
 // Render Hold/Sell Checklist
-function renderChecklist(company, overview) {
+function renderChecklist(company) {
     const container = document.getElementById('checklistContainer');
     container.innerHTML = '';
 
     const priceChange = company.changePercent;
     const price = company.price;
-    const week52High = overview?.week52High || 0;
-    const week52Low = overview?.week52Low || 0;
-    const peRatio = overview?.peRatio || 0;
-    const pbRatio = overview?.pbRatio || 0;
+    const week52High = company.weekHigh || 0;
+    const week52Low = company.weekLow || 0;
+    const peRatio = company.peRatio || 0;
 
     // Calculate metrics
     const distanceFromHigh = week52High ? ((price - week52High) / week52High * 100) : 0;
@@ -463,13 +469,13 @@ function renderChecklist(company, overview) {
             </div>
 
             <div class="checklist-item">
-                <div class="checklist-icon">💰</div>
+                <div class="checklist-icon">📉</div>
                 <div class="checklist-content">
-                    <h4>Valuation - P/B Ratio</h4>
-                    <p>${pbRatio ? `Current P/B: ${pbRatio.toFixed(2)}` : 'Data not available'}</p>
+                    <h4>52-Week Low Distance</h4>
+                    <p>${week52Low ? `Price is ${formatPercentage(distanceFromLow)} from 52-week low (${formatCurrency(week52Low)})` : 'Data not available'}</p>
                 </div>
-                <div class="checklist-status ${pbRatio > 0 && pbRatio < 3 ? 'status-positive' : pbRatio > 5 ? 'status-warning' : 'status-neutral'}">
-                    ${pbRatio > 0 && pbRatio < 3 ? 'Reasonable' : pbRatio > 5 ? 'High P/B' : 'Neutral'}
+                <div class="checklist-status ${distanceFromLow > 50 ? 'status-positive' : distanceFromLow < 10 ? 'status-negative' : 'status-warning'}">
+                    ${distanceFromLow > 50 ? 'Strong Recovery' : distanceFromLow < 10 ? 'Near Low' : 'Moderate'}
                 </div>
             </div>
 
@@ -577,13 +583,10 @@ async function selectCompany(company) {
     document.getElementById('refreshNews').style.display = 'inline-flex';
 
     try {
-        // Fetch company overview
-        const overview = await fetchCompanyOverview(company.symbol);
-
-        // Render checklist
+        // Render checklist with company data (no separate overview needed)
         document.getElementById('checklistLoading').style.display = 'none';
         document.getElementById('checklistError').style.display = 'none';
-        renderChecklist(company, overview);
+        renderChecklist(company);
 
         // Load company-specific news
         await loadNewsForQuery(company.name + ' stock India');
